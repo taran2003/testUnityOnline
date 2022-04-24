@@ -6,19 +6,22 @@ using Photon.Pun;
 public class Player : MonoBehaviour
 {
     public float speed;
-    private float jumpForce = 15f; 
-    public float radius; 
-    PhotonView view;
+    public float jumpForce; 
+    public float radius;
+    public int layer;
     SpriteRenderer sprite;
-    private Vector3 dir = new Vector3();
     Rigidbody2D rb;
     private bool isGrounded;
+    private Vector3 dir = new Vector3();
+    PhotonView view;
+
 
     void Start()
     {
         view = GetComponent<PhotonView>();
-        sprite = GetComponent<SpriteRenderer>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
+        layer = LayerMask.NameToLayer("Ground");
     }
 
     private void FixedUpdate()
@@ -34,7 +37,7 @@ public class Player : MonoBehaviour
             {
                 Run();
             }
-            if (isGrounded && Input.GetButton("Jump"))
+            if (Input.GetKey(KeyCode.Space) && isGrounded)
             {
                 Jump();
             }
@@ -56,12 +59,12 @@ public class Player : MonoBehaviour
 
     private void Jump()
     {
-        rb.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
     private void CheckGround()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius);
-        isGrounded = colliders.Length > 1;
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, 1 << layer);
+        isGrounded = colliders.Length >= 1;
     }
 }
