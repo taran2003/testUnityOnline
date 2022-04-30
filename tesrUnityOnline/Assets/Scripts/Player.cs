@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviourPun, IPunObservable
 {
     public float speed;
     public float jumpForce; 
     public float radius;
     public int layer;
+    public Player localPlayer;
     SpriteRenderer sprite;
     Rigidbody2D rb;
     private bool isGrounded;
     private Vector3 dir = new Vector3();
     PhotonView view;
-
 
     void Start()
     {
@@ -41,13 +41,6 @@ public class Player : MonoBehaviour
             {
                 Jump();
             }
-            //Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            //Vector2 moveAmount = moveInput.normalized * speed * Time.deltaTime;
-            //transform.position += (Vector3)moveAmount;
-        }
-        if(Input.GetButton("Horizontal"))
-        {
-            sprite.flipX = dir.x < 0.0f;
         }
     }
 
@@ -55,6 +48,7 @@ public class Player : MonoBehaviour
     {
         dir = transform.right * Input.GetAxis("Horizontal");
         transform.position = Vector3.MoveTowards(transform.position, transform.position + dir, speed * Time.deltaTime);
+        sprite.flipX = dir.x < 0.0f;
     }
 
     private void Jump()
@@ -66,5 +60,39 @@ public class Player : MonoBehaviour
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, 1 << layer);
         isGrounded = colliders.Length >= 1;
+    }
+
+    public static void RefreshInstance(ref Player player, Player playerPrefab, bool withMasterClient = false)
+    {
+        if (!PhotonNetwork.IsMasterClient || withMasterClient)
+        {
+            print("Respawn");
+            var pos = FindObjectOfType<GameManager>().spawns[Random.Range(0, FindObjectOfType<GameManager>().spawns.Length)].transform.position;
+            var rot = Quaternion.identity;
+            if (player != null)
+            {
+                pos = player.transform.position;
+                rot = player.transform.rotation;
+                PhotonNetwork.Destroy(player.gameObject);
+            }
+            player = PhotonNetwork.Instantiate(playerPrefab.gameObject.name, pos, rot).GetComponent<Player>();
+
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if(localPlayer == null)
+        {
+            return;
+        }
+        if(stream.IsWriting)
+        {
+            stream.SendNext(localPlayer.sprite.flipX);
+        }
+        else
+        {
+            localPlayer.sprite.flipX = (bool)stream.ReceiveNext();            
+        }
     }
 }
