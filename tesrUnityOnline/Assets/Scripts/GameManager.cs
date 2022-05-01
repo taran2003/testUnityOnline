@@ -43,6 +43,16 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public IEnumerator Respawn()
+    {
+        canRespawn = false;
+        dead = true;
+        yield return new WaitForSeconds(2);
+        //deadCam.GetComponentInChildren<TMPro.TMP_Text>().text = "Вы мертвы";
+        canRespawn = true;
+        yield return null;
+    }
+
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
         base.OnPlayerEnteredRoom(newPlayer);

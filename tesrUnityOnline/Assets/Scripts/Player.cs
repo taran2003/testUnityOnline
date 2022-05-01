@@ -8,13 +8,20 @@ public class Player : MonoBehaviourPun, IPunObservable
     public float speed;
     public float jumpForce; 
     public float radius;
-    public int layer;
-    public Player localPlayer;
+    //public Player localPlayer; 
+    public Rigidbody2D bullet;
+    public float fireSpeed;
+    public Transform firePoint;
     SpriteRenderer sprite;
     Rigidbody2D rb;
+    int layer;
     private bool isGrounded;
     private Vector3 dir = new Vector3();
     PhotonView view;
+    string lastDamagePlayer;
+    private float cd;
+    bool dead = false;
+    bool isHit = false;
 
     void Start()
     {
@@ -22,6 +29,7 @@ public class Player : MonoBehaviourPun, IPunObservable
         sprite = GetComponentInChildren<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         layer = LayerMask.NameToLayer("Ground");
+        cd = 0;
     }
 
     private void FixedUpdate()
@@ -41,14 +49,38 @@ public class Player : MonoBehaviourPun, IPunObservable
             {
                 Jump();
             }
+            if(Input.GetKeyDown(KeyCode.J))
+            {
+                Fire();
+            }
+            cd += Time.deltaTime;
+            if(isHit)
+            {
+                Dead();
+                isHit = false;
+            }
+        }
+        else if (isHit)
+        {
+            dead = true;
+        }
+    }
+
+    void Dead()
+    {
+        if(photonView.IsMine && !dead)
+        {
+            PhotonNetwork.Destroy(gameObject);
+            dead = true;
+            FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
         }
     }
 
     private void Run()
     {
-        dir = transform.right * Input.GetAxis("Horizontal");
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + dir, speed * Time.deltaTime);
-        sprite.flipX = dir.x < 0.0f;
+        rb.velocity = new Vector2(Input.GetAxis("Horizontal")*speed, rb.velocity.y);
+        if (Input.GetAxis("Horizontal") < 0) transform.localRotation = Quaternion.Euler(0, 180, 0);
+        if (Input.GetAxis("Horizontal") > 0) transform.localRotation = Quaternion.Euler(0, 0, 0);
     }
 
     private void Jump()
@@ -82,17 +114,40 @@ public class Player : MonoBehaviourPun, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if(localPlayer == null)
-        {
-            return;
-        }
         if(stream.IsWriting)
         {
-            stream.SendNext(localPlayer.sprite.flipX);
+            stream.SendNext(transform.localRotation);
+            stream.SendNext(isHit);
         }
         else
         {
-            localPlayer.sprite.flipX = (bool)stream.ReceiveNext();            
+            transform.localRotation = (Quaternion)stream.ReceiveNext();       
+            isHit = (bool)stream.ReceiveNext();
+        }
+    }
+
+    [PunRPC]
+    public void TakeDamage(Vector2 position ,string actorName)
+    {
+        if (photonView.IsMine)
+        {
+            float dist = Vector2.Distance(position, transform.position);
+            if (dist < 0.3 && actorName != photonView.Owner.UserId)
+            {
+                lastDamagePlayer = actorName;
+                isHit = true;
+            }
+        }
+    }
+
+    void Fire()
+    {
+        cd += Time.deltaTime;
+        if (cd > fireSpeed)
+        {
+            cd = 0;
+            var bl = PhotonNetwork.Instantiate(bullet.name, firePoint.position, transform.rotation);
+            bl.GetPhotonView().RPC("Set", RpcTarget.AllBuffered, GetComponent<PhotonView>().Owner.UserId);
         }
     }
 }
