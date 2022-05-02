@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToLive: 5
-  tag: 
+  tag: Ground
   speed: 20
 --- !u!114 &-4668181619083859956
 MonoBehaviour:

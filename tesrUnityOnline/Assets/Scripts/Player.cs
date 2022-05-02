@@ -11,6 +11,7 @@ public class Player : MonoBehaviourPun, IPunObservable
     string lastDamagePlayer;
     bool dead = false;
     bool isHit = false;
+    public SpriteRenderer sprite;
     
 
     void Start()
@@ -71,25 +72,25 @@ public class Player : MonoBehaviourPun, IPunObservable
     {
         if(stream.IsWriting)
         {
-            stream.SendNext(transform.localRotation);
+            stream.SendNext(sprite.transform.localRotation);
             stream.SendNext(isHit);
         }
         else
         {
-            transform.localRotation = (Quaternion)stream.ReceiveNext();       
+            sprite.transform.localRotation = (Quaternion)stream.ReceiveNext();       
             isHit = (bool)stream.ReceiveNext();
         }
     }
 
     [PunRPC]
-    public void TakeDamage(Vector2 position ,string actorId, string sander)
+    public void TakeDamage(Vector2 position ,Photon.Realtime.Player sender)
     {
         if (photonView.IsMine)
         {
             float dist = Vector2.Distance(position, transform.position);
-            if (dist < 0.3 && actorId != photonView.Owner.UserId)
+            if (dist < 0.25 && sender != photonView.Owner)
             {
-                lastDamagePlayer = actorId;
+                lastDamagePlayer = sender.NickName;
                 isHit = true;
             }
         }

@@ -17,6 +17,8 @@ public class PlayerLocal : MonoBehaviour
     public Rigidbody2D bullet;
     public Camera cam;
     Vector3 diff;
+    private Quaternion buf;
+    SpriteRenderer sprite;
 
 
 
@@ -25,6 +27,7 @@ public class PlayerLocal : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         layer = LayerMask.NameToLayer("Ground");
         cd = 0;
+        sprite = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void FixedUpdate()
@@ -57,11 +60,11 @@ public class PlayerLocal : MonoBehaviour
         rb.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb.velocity.y);
         if (Input.GetAxis("Horizontal") < 0)
         {
-            transform.localRotation = Quaternion.Euler(0, 180, 0);
+            sprite.transform.rotation = Quaternion.Euler(0, 180, 0);
         }
         if (Input.GetAxis("Horizontal") > 0)
         {
-            transform.localRotation = Quaternion.Euler(0, 0, 0);
+            sprite.transform.rotation = Quaternion.Euler(0, 0, 0);
         }
     }
 
@@ -82,7 +85,8 @@ public class PlayerLocal : MonoBehaviour
         {
             cd = 0;
             var bl = PhotonNetwork.Instantiate(bullet.name, firePoint.position, transform.rotation);
-            bl.GetPhotonView().RPC("Set", RpcTarget.AllBuffered, GetComponent<PhotonView>().Owner.UserId, GetComponent<PhotonView>().Owner.NickName);
+            if (sprite.transform.rotation.y == 0) bl.GetPhotonView().RPC("Set", RpcTarget.AllBuffered, GetComponent<PhotonView>().Owner, Vector3.right);
+            else bl.GetPhotonView().RPC("Set", RpcTarget.AllBuffered, GetComponent<PhotonView>().Owner, -Vector3.right);
         }
     }
 

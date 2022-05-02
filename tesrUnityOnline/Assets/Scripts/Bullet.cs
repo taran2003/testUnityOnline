@@ -9,14 +9,9 @@ public class Bullet : MonoBehaviourPun
     public string tag;
     public float speed;
     float time;
-    string senderId;
-    string senderName;
+    Photon.Realtime.Player senderPh;
     PhotonView view;
-    //void Start()
-    //{
-    //    view = GetComponent<PhotonView>();
-    //    Destroy(gameObject, timeToLive);
-    //}
+    Vector3 dir;
 
     void Update()
     {
@@ -25,30 +20,35 @@ public class Bullet : MonoBehaviourPun
             GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
         }
         time += Time.deltaTime;
-        transform.Translate(Vector3.right * speed * Time.deltaTime);
+        transform.Translate(dir * speed * Time.deltaTime);
     }
 
     [PunRPC]
-    public void Set(string snId, string snName)
+    public void Set(Photon.Realtime.Player sender, Vector3 direction)
     {
-        senderId = snId;
-        senderName = snName;
+        senderPh = sender;
+        dir = direction;
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!collision.isTrigger)
         {
             foreach (var item in FindObjectsOfType<Player>())
             {
-                item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, (Vector2)transform.position, senderId, senderName);
+                item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, (Vector2)transform.position, senderPh);
+            }    
+            if (collision.tag == tag)
+            {
+                GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
             }
-            GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
         }
     }
 
     [PunRPC]
     public void Del()
     {
+        time = 0;
         Destroy(gameObject);
     }
 }
