@@ -39,16 +39,12 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
-  - 
   - Del
   - SendMessage
   - Set
   - TakeDamage
-<<<<<<< Updated upstream
-=======
-  - ReceivedMessage
   - Delete
->>>>>>> Stashed changes
+  - ReceivedMessage
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

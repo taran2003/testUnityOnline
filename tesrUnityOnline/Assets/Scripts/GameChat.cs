@@ -17,6 +17,7 @@ public class GameChat : MonoBehaviour
 
     private void Awake()
     {
+        photonView = GetComponent<PhotonView>();
         _instance = this;
     }
    
