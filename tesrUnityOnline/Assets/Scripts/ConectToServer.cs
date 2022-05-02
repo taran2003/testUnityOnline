@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ConectToServer : MonoBehaviourPunCallbacks
 {
@@ -14,7 +15,7 @@ public class ConectToServer : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.NickName = Random.Range(0, int.MaxValue).ToString("00000000");
         SceneManager.LoadScene("Menu");
     }
+
 }

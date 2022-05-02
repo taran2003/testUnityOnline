@@ -9,7 +9,8 @@ public class Bullet : MonoBehaviourPun
     public string tag;
     public float speed;
     float time;
-    string sender;
+    string senderId;
+    string senderName;
     PhotonView view;
     //void Start()
     //{
@@ -28,9 +29,10 @@ public class Bullet : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void Set(string sn)
+    public void Set(string snId, string snName)
     {
-        sender = sn;
+        senderId = snId;
+        senderName = snName;
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -38,7 +40,7 @@ public class Bullet : MonoBehaviourPun
         {
             foreach (var item in FindObjectsOfType<Player>())
             {
-                item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, (Vector2)transform.position, sender);
+                item.photonView.RPC("TakeDamage", RpcTarget.AllBuffered, (Vector2)transform.position, senderId, senderName);
             }
             GetComponent<PhotonView>().RPC("Del", RpcTarget.AllBuffered);
         }

@@ -1,59 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Photon.Pun;
 
 public class Player : MonoBehaviourPun, IPunObservable
 {
-    public float speed;
-    public float jumpForce; 
-    public float radius;
-    //public Player localPlayer; 
-    public Rigidbody2D bullet;
-    public float fireSpeed;
-    public Transform firePoint;
-    SpriteRenderer sprite;
-    Rigidbody2D rb;
-    int layer;
-    private bool isGrounded;
-    private Vector3 dir = new Vector3();
+    public PlayerLocal playerLocal;
     PhotonView view;
     string lastDamagePlayer;
-    private float cd;
     bool dead = false;
     bool isHit = false;
+    
 
     void Start()
     {
         view = GetComponent<PhotonView>();
-        sprite = GetComponentInChildren<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        layer = LayerMask.NameToLayer("Ground");
-        cd = 0;
-    }
-
-    private void FixedUpdate()
-    {
-        CheckGround();
+        if (!photonView.IsMine)
+        {
+            playerLocal.enabled = false;
+            Destroy(playerLocal.cam.gameObject);
+        }
     }
 
     void Update()
     {
         if (view.IsMine) 
         { 
-            if (Input.GetButton("Horizontal"))
-            {
-                Run();
-            }
-            if (Input.GetKey(KeyCode.Space) && isGrounded)
-            {
-                Jump();
-            }
-            if(Input.GetKeyDown(KeyCode.J))
-            {
-                Fire();
-            }
-            cd += Time.deltaTime;
             if(isHit)
             {
                 Dead();
@@ -74,24 +47,6 @@ public class Player : MonoBehaviourPun, IPunObservable
             dead = true;
             FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
         }
-    }
-
-    private void Run()
-    {
-        rb.velocity = new Vector2(Input.GetAxis("Horizontal")*speed, rb.velocity.y);
-        if (Input.GetAxis("Horizontal") < 0) transform.localRotation = Quaternion.Euler(0, 180, 0);
-        if (Input.GetAxis("Horizontal") > 0) transform.localRotation = Quaternion.Euler(0, 0, 0);
-    }
-
-    private void Jump()
-    {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-    }
-
-    private void CheckGround()
-    {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, radius, 1 << layer);
-        isGrounded = colliders.Length >= 1;
     }
 
     public static void RefreshInstance(ref Player player, Player playerPrefab, bool withMasterClient = false)
@@ -127,27 +82,16 @@ public class Player : MonoBehaviourPun, IPunObservable
     }
 
     [PunRPC]
-    public void TakeDamage(Vector2 position ,string actorName)
+    public void TakeDamage(Vector2 position ,string actorId, string sander)
     {
         if (photonView.IsMine)
         {
             float dist = Vector2.Distance(position, transform.position);
-            if (dist < 0.3 && actorName != photonView.Owner.UserId)
+            if (dist < 0.3 && actorId != photonView.Owner.UserId)
             {
-                lastDamagePlayer = actorName;
+                lastDamagePlayer = actorId;
                 isHit = true;
             }
-        }
-    }
-
-    void Fire()
-    {
-        cd += Time.deltaTime;
-        if (cd > fireSpeed)
-        {
-            cd = 0;
-            var bl = PhotonNetwork.Instantiate(bullet.name, firePoint.position, transform.rotation);
-            bl.GetPhotonView().RPC("Set", RpcTarget.AllBuffered, GetComponent<PhotonView>().Owner.UserId);
         }
     }
 }
