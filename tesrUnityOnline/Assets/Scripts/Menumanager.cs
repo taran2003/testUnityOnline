@@ -10,7 +10,6 @@ public class Menumanager : MonoBehaviourPunCallbacks
     public InputField create;
     public InputField join;
     public InputField userName;
-    
     public void CreateRoom()
     {
         RoomOptions roomOptions = new RoomOptions();

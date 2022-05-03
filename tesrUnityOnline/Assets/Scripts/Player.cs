@@ -45,6 +45,7 @@ public class Player : MonoBehaviourPun, IPunObservable
         if(photonView.IsMine && !dead)
         {
             PhotonNetwork.Destroy(gameObject);
+            GameChat.Instance.SendChatMessage("Player killed");
             dead = true;
             FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
         }

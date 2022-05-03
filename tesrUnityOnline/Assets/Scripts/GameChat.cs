@@ -8,12 +8,13 @@ public class GameChat : MonoBehaviour
     public PhotonView photonView;
     public const int MaxMessage = 7;
     private static GameChat _instance;
-    private static GameChat Instance { get { return _instance; } }
+    public static GameChat Instance { get { return _instance; } }
 
     private float time=0f;
     private readonly List<string> _messages = new List<string>();
     private string _messageText = "";
     private bool _showInput;
+    public Menumanager menumanager = new Menumanager();
 
     private void Awake()
     {
@@ -57,7 +58,7 @@ public class GameChat : MonoBehaviour
             {
                 if(!string.IsNullOrEmpty(_messageText))
                 {
-                    SendChatMessage("Text: " + _messageText);
+                    SendChatMessage(": " + _messageText);
                 }
 
                 _messageText = "";
