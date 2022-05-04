@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public bool canRespawn,dead;
     public Player playerPrefab;
     public Player LocalPlayer;
+    public GameChat chat;
 
     private void Awake()
     {
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private void Update()
     {
+        Application.targetFrameRate = 60;
         if (dead && canRespawn)
         {
             RespawnPlayer();
@@ -43,6 +45,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
+    public void Disconnect()
+    {
+        if (LocalPlayer != null)
+        {
+            PhotonNetwork.Destroy(LocalPlayer.gameObject);
+        }
+        PhotonNetwork.LeaveRoom();
+        Destroy(GameObject.Find("MenuManager"));
+        Cursor.visible = true;
+        SceneManager.LoadScene("Menu");
+    }
+
     public IEnumerator Respawn()
     {
         canRespawn = false;
@@ -53,9 +67,29 @@ public class GameManager : MonoBehaviourPunCallbacks
         yield return null;
     }
 
+    public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
+    {
+        if (otherPlayer.IsLocal)
+        {
+            Disconnect();
+        }
+        base.OnPlayerLeftRoom(otherPlayer);
+    }
+
+    public override void OnMasterClientSwitched(Photon.Realtime.Player newMasterClient)
+    {
+        if (newMasterClient.IsLocal)
+        {
+            Disconnect();
+        }
+        PlayerPrefs.SetString("Disconnect", "Server close connection");
+        base.OnMasterClientSwitched(newMasterClient);
+    }
+
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
         base.OnPlayerEnteredRoom(newPlayer);
+        chat.SendChatMessage($"{newPlayer.NickName} connected to lobby");
         Player.RefreshInstance(ref LocalPlayer, playerPrefab);
     }
 

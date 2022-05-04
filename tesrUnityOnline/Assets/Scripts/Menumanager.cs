@@ -26,13 +26,16 @@ public class Menumanager : MonoBehaviourPunCallbacks
 
     private void SetUserName()
     {
-        if(userName.text.Length == 0)
+        if (PlayerPrefs.HasKey("NickName"))
         {
-            PlayerPrefs.SetString("NickName", Random.Range(int.MinValue,int.MaxValue).ToString());
-        }
-        else
-        {
-            PlayerPrefs.SetString("NickName", userName.text);
+            if (userName.text.Length == 0)
+            {
+                PhotonNetwork.NickName = Random.Range(int.MinValue, int.MaxValue).ToString();
+            }
+            else
+            {
+                PhotonNetwork.NickName = userName.text;
+            }
         }
     }
 

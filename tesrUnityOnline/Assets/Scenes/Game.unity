@@ -214,7 +214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 193712509}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.05, y: -3.14, z: 0}
+  m_LocalPosition: {x: 9.99, y: -3.14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1732880333}
@@ -393,7 +393,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1201965912}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.36, y: -3.08, z: 0}
+  m_LocalPosition: {x: -9.97, y: -3.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1732880333}
@@ -496,6 +496,7 @@ MonoBehaviour:
   dead: 1
   playerPrefab: {fileID: 1129616688888644130, guid: 195bb1e4942ffd34a80606bccb090daa, type: 3}
   LocalPlayer: {fileID: 0}
+  chat: {fileID: 13400510}
 --- !u!4 &1653577449
 Transform:
   m_ObjectHideFlags: 0

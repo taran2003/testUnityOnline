@@ -269,6 +269,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerLocal: {fileID: 1129616688888644131}
+  k: 0
+  d: 0
   sprite: {fileID: 1129616688794395817}
 --- !u!114 &1129616688888644131
 MonoBehaviour:

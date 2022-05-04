@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using System.Linq;
 
 public class Player : MonoBehaviourPun, IPunObservable
 {
@@ -11,12 +12,14 @@ public class Player : MonoBehaviourPun, IPunObservable
     string lastDamagePlayer;
     bool dead = false;
     bool isHit = false;
+    public int k = 0, d = 0;
     public SpriteRenderer sprite;
     
 
     void Start()
     {
         view = GetComponent<PhotonView>();
+        SaveKD();
         if (!photonView.IsMine)
         {
             playerLocal.enabled = false;
@@ -33,6 +36,11 @@ public class Player : MonoBehaviourPun, IPunObservable
                 Dead();
                 isHit = false;
             }
+            if (photonView.Owner.CustomProperties["K"] != null)
+            {
+                k = (int)photonView.Owner.CustomProperties["K"];
+                d = (int)photonView.Owner.CustomProperties["D"];
+            }
         }
         else if (isHit)
         {
@@ -44,11 +52,43 @@ public class Player : MonoBehaviourPun, IPunObservable
     {
         if(photonView.IsMine && !dead)
         {
+            if (lastDamagePlayer != "")
+            {
+                var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.NickName == lastDamagePlayer);
+                if (ldp != null)
+                {
+                    ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+                    h.Add("K", (int)ldp.CustomProperties["K"] +1);
+                    h.Add("D", (int)ldp.CustomProperties["D"]);
+                    ldp.SetCustomProperties(h);
+                }
+            }
+            d++;
+            SaveKD();
             PhotonNetwork.Destroy(gameObject);
-            GameChat.Instance.SendChatMessage("Player killed");
+            GameChat.Instance.SendChatMessage($"{view.Owner.NickName} killed by {lastDamagePlayer}");
             dead = true;
             FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
         }
+    }
+
+    public void Kick(Photon.Realtime.Player pl)
+    {
+        PhotonNetwork.CloseConnection(pl);
+    }
+
+    [PunRPC]
+    public void AddKill()
+    {
+        k++;
+        SaveKD();
+    }
+    public void SaveKD()
+    {
+        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+        h.Add("K", k);
+        h.Add("D", d);
+        photonView.Owner.SetCustomProperties(h);
     }
 
     public static void RefreshInstance(ref Player player, Player playerPrefab, bool withMasterClient = false)
@@ -75,11 +115,15 @@ public class Player : MonoBehaviourPun, IPunObservable
         {
             stream.SendNext(sprite.transform.localRotation);
             stream.SendNext(isHit);
+            stream.SendNext(k);
+            stream.SendNext(d);
         }
         else
         {
             sprite.transform.localRotation = (Quaternion)stream.ReceiveNext();       
             isHit = (bool)stream.ReceiveNext();
+            k = (int)stream.ReceiveNext();
+            d = (int)stream.ReceiveNext();
         }
     }
 
@@ -89,7 +133,7 @@ public class Player : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             float dist = Vector2.Distance(position, transform.position);
-            if (dist < 0.25 && sender != photonView.Owner)
+            if (dist < 0.25 && sender.UserId != photonView.Owner.UserId)
             {
                 lastDamagePlayer = sender.NickName;
                 isHit = true;

@@ -28,7 +28,6 @@ public class PlayerLocal : MonoBehaviour
         layer = LayerMask.NameToLayer("Ground");
         cd = 0;
         sprite = GetComponentInChildren<SpriteRenderer>();
-        GameChat.Instance.SendChatMessage("Player spawned");
     }
 
     private void FixedUpdate()

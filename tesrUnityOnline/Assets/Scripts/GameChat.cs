@@ -14,7 +14,6 @@ public class GameChat : MonoBehaviour
     private readonly List<string> _messages = new List<string>();
     private string _messageText = "";
     private bool _showInput;
-    public Menumanager menumanager = new Menumanager();
 
     private void Awake()
     {
@@ -58,7 +57,7 @@ public class GameChat : MonoBehaviour
             {
                 if(!string.IsNullOrEmpty(_messageText))
                 {
-                    SendChatMessage(": " + _messageText);
+                    SendChatMessage($"{photonView.Owner.NickName}:   {_messageText}");
                 }
 
                 _messageText = "";
