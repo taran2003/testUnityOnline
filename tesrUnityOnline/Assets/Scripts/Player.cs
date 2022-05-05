@@ -12,7 +12,7 @@ public class Player : MonoBehaviourPun, IPunObservable
     string lastDamagePlayer;
     bool dead = false;
     bool isHit = false;
-    public int k = 0, d = 0;
+    public int k, d;
     public SpriteRenderer sprite;
     
 
