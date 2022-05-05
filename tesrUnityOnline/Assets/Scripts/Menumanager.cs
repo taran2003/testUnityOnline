@@ -41,6 +41,11 @@ public class Menumanager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
+        h.Add("K", 0);
+        h.Add("D", 0);
+        PhotonNetwork.LocalPlayer.SetCustomProperties(h);
         PhotonNetwork.LoadLevel("Game");
+        base.OnJoinedRoom();
     }
 }

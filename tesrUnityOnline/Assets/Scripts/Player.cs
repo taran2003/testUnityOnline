@@ -14,17 +14,22 @@ public class Player : MonoBehaviourPun, IPunObservable
     bool isHit = false;
     public int k, d;
     public SpriteRenderer sprite;
-    
+
+    private void Awake()
+    {        
+        if (!photonView.IsMine)
+        {
+            playerLocal.enabled = false;
+            GetComponent<PlayerUI>().enabled = false;
+            Destroy(playerLocal.cam.gameObject);
+            
+        }
+        
+    }
 
     void Start()
     {
         view = GetComponent<PhotonView>();
-        SaveKD();
-        if (!photonView.IsMine)
-        {
-            playerLocal.enabled = false;
-            Destroy(playerLocal.cam.gameObject);
-        }
     }
 
     void Update()
