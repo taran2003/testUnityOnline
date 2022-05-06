@@ -48,4 +48,9 @@ public class Menumanager : MonoBehaviourPunCallbacks
         PhotonNetwork.LoadLevel("Game");
         base.OnJoinedRoom();
     }
+
+    public void Quit()
+    {
+        Application.Quit();
+    }
 }
