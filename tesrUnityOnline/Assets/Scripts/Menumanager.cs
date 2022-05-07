@@ -4,12 +4,21 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using Photon.Realtime;
+using Photon.Pun;
 
 public class Menumanager : MonoBehaviourPunCallbacks
 {
     public InputField create;
     public InputField join;
     public InputField userName;
+    public ItemList itemPref;
+    public Transform content;
+
+    public void UpdateLobiList()
+    {
+        OnConnectedToMaster();
+    }
+
     public void CreateRoom()
     {
         RoomOptions roomOptions = new RoomOptions();
@@ -24,7 +33,7 @@ public class Menumanager : MonoBehaviourPunCallbacks
         PhotonNetwork.JoinRoom(join.text);
     }
 
-    private void SetUserName()
+    public void SetUserName()
     {
         if (PlayerPrefs.HasKey("NickName"))
         {
@@ -52,5 +61,15 @@ public class Menumanager : MonoBehaviourPunCallbacks
     public void Quit()
     {
         Application.Quit();
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        foreach(RoomInfo info in roomList)
+        {
+            ItemList itemList = Instantiate(itemPref, content);
+
+            if (itemList != null) itemList.SetInfo(info);
+        }
     }
 }
