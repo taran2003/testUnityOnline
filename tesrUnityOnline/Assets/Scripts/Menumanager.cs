@@ -13,6 +13,8 @@ public class Menumanager : MonoBehaviourPunCallbacks
     public InputField userName;
     public ItemList itemPref;
     public Transform content;
+    public Text errorText;
+    public GameObject errorPref;
 
     public void UpdateLobiList()
     {
@@ -63,12 +65,31 @@ public class Menumanager : MonoBehaviourPunCallbacks
         Application.Quit();
     }
 
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        errorPref.SetActive(true);
+        errorText.text = message;
+    }
+
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        errorPref.SetActive(true);
+        errorText.text = message;
+    }
+
+
+
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
+        HashSet<RoomInfo> rooms = new HashSet<RoomInfo>(); 
         foreach(RoomInfo info in roomList)
         {
+            rooms.Add(info);
+            
+        }
+        foreach (RoomInfo info in rooms)
+        {
             ItemList itemList = Instantiate(itemPref, content);
-
             if (itemList != null) itemList.SetInfo(info);
         }
     }

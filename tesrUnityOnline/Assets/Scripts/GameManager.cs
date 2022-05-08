@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public Player playerPrefab;
     public Player LocalPlayer;
     public GameChat chat;
+    public GameObject buton;
 
     private void Awake()
     {
@@ -33,6 +34,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             RespawnPlayer();
             dead = false;
+        }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(!buton.active) buton.SetActive(true);
+            else buton.SetActive(false);
         }
     }
 
@@ -54,7 +60,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LeaveRoom();
         Destroy(GameObject.Find("MenuManager"));
         Cursor.visible = true;
-        SceneManager.LoadScene("Menu");
+        SceneManager.LoadScene("LoadSkrin");
     }
 
     public IEnumerator Respawn()
@@ -62,7 +68,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         canRespawn = false;
         dead = true;
         yield return new WaitForSeconds(2);
-        //deadCam.GetComponentInChildren<TMPro.TMP_Text>().text = "Вы мертвы";
         canRespawn = true;
         yield return null;
     }
