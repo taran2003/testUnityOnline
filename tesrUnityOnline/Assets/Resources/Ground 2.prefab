@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7213666146332189423}
   - component: {fileID: 8337108062536378976}
   m_Layer: 6
-  m_Name: Ground
+  m_Name: Ground 2
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0029637814, y: -0.11832389}
+  m_Offset: {x: -0.0029637814, y: -0.09746307}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -57,7 +57,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.7481003, y: 1.7448449}
+  m_Size: {x: 1.7481003, y: 1.5550853}
   m_EdgeRadius: 0
 --- !u!50 &8337108062536378976
 Rigidbody2D:
@@ -90,7 +90,7 @@ PrefabInstance:
     - target: {fileID: 502635145325568484, guid: e83f5a68a507fe54a8fd1756f27dd22f, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: dea03e49b2474a2489c9aa40cc25c208, type: 3}
+      objectReference: {fileID: 21300000, guid: de6201f0284d10d46a4454f00b8bf6a9, type: 3}
     - target: {fileID: 502635145325568484, guid: e83f5a68a507fe54a8fd1756f27dd22f, type: 3}
       propertyPath: m_Color.b
       value: 1

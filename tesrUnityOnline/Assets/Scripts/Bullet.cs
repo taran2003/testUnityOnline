@@ -12,6 +12,12 @@ public class Bullet : MonoBehaviourPun
     Photon.Realtime.Player senderPh;
     PhotonView view;
     Vector3 dir;
+    SpriteRenderer sprite;
+
+    private void Start()
+    {
+        sprite = GetComponentInChildren<SpriteRenderer>();
+    }
 
     void Update()
     {
@@ -28,6 +34,8 @@ public class Bullet : MonoBehaviourPun
     {
         senderPh = sender;
         dir = direction;
+        sprite = GetComponentInChildren<SpriteRenderer>();
+        sprite.flipX = dir.x < 0;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
