@@ -9,7 +9,7 @@ public class Player : MonoBehaviourPun, IPunObservable
 {
     public PlayerLocal playerLocal;
     PhotonView view;
-    string lastDamagePlayer;
+    Photon.Realtime.Player lastDamagePlayer;
     bool dead = false;
     bool isHit = false;
     public int k, d;
@@ -57,9 +57,9 @@ public class Player : MonoBehaviourPun, IPunObservable
     {
         if(photonView.IsMine && !dead)
         {
-            if (lastDamagePlayer != "")
+            if (lastDamagePlayer != null)
             {
-                var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.NickName == lastDamagePlayer);
+                var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId == lastDamagePlayer.UserId);
                 if (ldp != null)
                 {
                     ExitGames.Client.Photon.Hashtable h = new ExitGames.Client.Photon.Hashtable();
@@ -71,7 +71,7 @@ public class Player : MonoBehaviourPun, IPunObservable
             d++;
             SaveKD();
             PhotonNetwork.Destroy(gameObject);
-            GameChat.Instance.SendChatMessage($"{view.Owner.NickName} killed by {lastDamagePlayer}");
+            GameChat.Instance.SendChatMessage($"{view.Owner.NickName} killed by {lastDamagePlayer.NickName}");
             dead = true;
             FindObjectOfType<GameManager>().StartCoroutine(FindObjectOfType<GameManager>().Respawn());
         }
@@ -138,9 +138,9 @@ public class Player : MonoBehaviourPun, IPunObservable
         if (photonView.IsMine)
         {
             float dist = Vector2.Distance(position, transform.position);
-            if (dist < 0.25 && sender.UserId != photonView.Owner.UserId)
+            if (dist < 0.5 && sender.UserId != photonView.Owner.UserId)
             {
-                lastDamagePlayer = sender.NickName;
+                lastDamagePlayer = sender;
                 isHit = true;
             }
         }

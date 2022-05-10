@@ -4743,10 +4743,13 @@ MonoBehaviour:
   spawns:
   - {fileID: 1201965912}
   - {fileID: 193712509}
+  playerPrefs:
+  - {fileID: 1129616688888644130, guid: 195bb1e4942ffd34a80606bccb090daa, type: 3}
+  - {fileID: 1129616688888644130, guid: 4387e1cba58b35d439dbad10b0c31dcd, type: 3}
   canRespawn: 1
   dead: 1
-  playerPrefab: {fileID: 1129616688888644130, guid: 4387e1cba58b35d439dbad10b0c31dcd, type: 3}
-  LocalPlayer: {fileID: 0}
+  playerPrefab: {fileID: 0}
+  localPlayer: {fileID: 0}
   chat: {fileID: 13400510}
   buton: {fileID: 295630253}
 --- !u!4 &1653577449

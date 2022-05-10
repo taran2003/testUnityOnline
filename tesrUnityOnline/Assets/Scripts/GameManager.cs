@@ -12,9 +12,10 @@ using TMPro;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public GameObject[] spawns;
+    public Player[] playerPrefs;
     public bool canRespawn,dead;
     public Player playerPrefab;
-    public Player LocalPlayer;
+    public Player localPlayer;
     public GameChat chat;
     public GameObject buton;
 
@@ -25,6 +26,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             SceneManager.LoadScene("LoadSkrin");
             return;
         }
+        playerPrefab = playerPrefs[PlayerPrefs.GetInt("PlayerModel")];
     }
 
     private void Update()
@@ -46,16 +48,16 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if (canRespawn)
         {
-            Player.RefreshInstance(ref LocalPlayer, playerPrefab, true);
+            Player.RefreshInstance(ref localPlayer, playerPrefab, true);
             dead = false;
         }
     }
 
     public void Disconnect()
     {
-        if (LocalPlayer != null)
+        if (localPlayer != null)
         {
-            PhotonNetwork.Destroy(LocalPlayer.gameObject);
+            PhotonNetwork.Destroy(localPlayer.gameObject);
         }
         PhotonNetwork.LeaveRoom();
         Destroy(GameObject.Find("MenuManager"));
@@ -95,7 +97,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerEnteredRoom(newPlayer);
         chat.SendChatMessage($"{newPlayer.NickName} connected to lobby");
-        Player.RefreshInstance(ref LocalPlayer, playerPrefab);
+        Player.RefreshInstance(ref localPlayer, playerPrefab);
     }
 
 }

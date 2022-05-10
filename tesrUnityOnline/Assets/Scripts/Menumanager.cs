@@ -26,6 +26,7 @@ public class Menumanager : MonoBehaviourPunCallbacks
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = 4;
         SetUserName();
+        PlayerPrefs.SetInt("PlayerModel", GetComponent<SelectChar>().pers);
         PhotonNetwork.CreateRoom(create.text, roomOptions);
     }
 
@@ -37,6 +38,7 @@ public class Menumanager : MonoBehaviourPunCallbacks
 
     public void SetUserName()
     {
+        PlayerPrefs.SetInt("PlayerModel", GetComponent<SelectChar>().pers);
         if (PlayerPrefs.HasKey("NickName"))
         {
             if (userName.text.Length == 0)
@@ -77,15 +79,12 @@ public class Menumanager : MonoBehaviourPunCallbacks
         errorText.text = message;
     }
 
-
-
     public override void OnRoomListUpdate(List<RoomInfo> roomList)
     {
-        HashSet<RoomInfo> rooms = new HashSet<RoomInfo>(); 
-        foreach(RoomInfo info in roomList)
+        HashSet<RoomInfo> rooms = new HashSet<RoomInfo>();
+        foreach (RoomInfo info in roomList)
         {
             rooms.Add(info);
-            
         }
         foreach (RoomInfo info in rooms)
         {
