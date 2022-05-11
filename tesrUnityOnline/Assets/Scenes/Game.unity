@@ -4746,6 +4746,8 @@ MonoBehaviour:
   playerPrefs:
   - {fileID: 1129616688888644130, guid: 195bb1e4942ffd34a80606bccb090daa, type: 3}
   - {fileID: 1129616688888644130, guid: 4387e1cba58b35d439dbad10b0c31dcd, type: 3}
+  - {fileID: 1129616688888644130, guid: 427a0d87433e9d34fa90c1272883355c, type: 3}
+  - {fileID: 1129616688888644130, guid: 5d29ea621e475fd4e920204a1a099f0d, type: 3}
   canRespawn: 1
   dead: 1
   playerPrefab: {fileID: 0}
