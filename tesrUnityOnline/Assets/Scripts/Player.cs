@@ -14,6 +14,7 @@ public class Player : MonoBehaviourPun, IPunObservable
     bool isHit = false;
     public int k, d;
     public SpriteRenderer sprite;
+    public AudioSource death;
 
     private void Awake()
     {        
@@ -59,6 +60,7 @@ public class Player : MonoBehaviourPun, IPunObservable
         {
             if (lastDamagePlayer != null)
             {
+                
                 var ldp = PhotonNetwork.PlayerList.ToList().Find(x => x.UserId == lastDamagePlayer.UserId);
                 if (ldp != null)
                 {

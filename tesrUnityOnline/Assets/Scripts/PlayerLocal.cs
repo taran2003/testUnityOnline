@@ -20,7 +20,7 @@ public class PlayerLocal : MonoBehaviour
     Vector3 diff;
     private Quaternion buf;
     SpriteRenderer sprite;
-
+    public AudioSource fire;
 
 
     void Start()
@@ -52,6 +52,7 @@ public class PlayerLocal : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
+            fire.Play();
             Fire();
         }
         cd += Time.deltaTime;
