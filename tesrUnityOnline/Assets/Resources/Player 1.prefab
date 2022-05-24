@@ -356,6 +356,7 @@ MonoBehaviour:
   playerLocal: {fileID: 1129616688888644131}
   k: 0
   d: 0
+  anim: {fileID: 0}
   sprite: {fileID: 1129616688794395817}
   death: {fileID: 0}
 --- !u!114 &1129616688888644131
@@ -373,7 +374,6 @@ MonoBehaviour:
   speed: 5
   jumpForce: 8
   radius: 0.8
-  anim: {fileID: 0}
   fireSpeed: 0
   firePoint: {fileID: 1129616688548076456}
   bullet: {fileID: 7070019174802736116, guid: c48c10bca6d61da4eaff53cc45ee4dc4, type: 3}

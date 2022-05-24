@@ -13,6 +13,7 @@ public class Player : MonoBehaviourPun, IPunObservable
     bool dead = false;
     bool isHit = false;
     public int k, d;
+    public Animator anim;
     public SpriteRenderer sprite;
     public AudioSource death;
 
@@ -23,14 +24,14 @@ public class Player : MonoBehaviourPun, IPunObservable
             playerLocal.enabled = false;
             GetComponent<PlayerUI>().enabled = false;
             Destroy(playerLocal.cam.gameObject);
-            
         }
-        
+        anim = GetComponent<Animator>();
     }
 
     void Start()
     {
         view = GetComponent<PhotonView>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -47,6 +48,8 @@ public class Player : MonoBehaviourPun, IPunObservable
                 k = (int)photonView.Owner.CustomProperties["K"];
                 d = (int)photonView.Owner.CustomProperties["D"];
             }
+            anim.SetBool("run", Input.GetAxis("Horizontal") != 0);
+
         }
         else if (isHit)
         {
@@ -124,6 +127,7 @@ public class Player : MonoBehaviourPun, IPunObservable
             stream.SendNext(isHit);
             stream.SendNext(k);
             stream.SendNext(d);
+            stream.SendNext(anim.GetBool("run"));
         }
         else
         {
@@ -131,6 +135,8 @@ public class Player : MonoBehaviourPun, IPunObservable
             isHit = (bool)stream.ReceiveNext();
             k = (int)stream.ReceiveNext();
             d = (int)stream.ReceiveNext();
+            anim.SetBool("run", (bool)stream.ReceiveNext());
+
         }
     }
 

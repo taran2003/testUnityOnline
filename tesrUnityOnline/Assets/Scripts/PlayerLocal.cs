@@ -8,7 +8,6 @@ public class PlayerLocal : MonoBehaviour
     public float speed;
     public float jumpForce;
     public float radius;
-    public Animator anim;
     Rigidbody2D rb;
     int layer;
     private bool isGrounded;
@@ -29,7 +28,6 @@ public class PlayerLocal : MonoBehaviour
         layer = LayerMask.NameToLayer("Ground");
         cd = 0;
         sprite = GetComponentInChildren<SpriteRenderer>();
-        anim = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -56,7 +54,6 @@ public class PlayerLocal : MonoBehaviour
             Fire();
         }
         cd += Time.deltaTime;
-        anim.SetBool("run", Input.GetAxis("Horizontal") != 0);
     }
 
     private void Run()
